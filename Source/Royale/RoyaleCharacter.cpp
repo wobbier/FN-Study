@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/MainHUD.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ARoyaleCharacter
@@ -86,7 +87,7 @@ void ARoyaleCharacter::BeginPlay()
 
 	if (wMainMenu)
 	{
-		MyMainMenu = CreateWidget<UUserWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), wMainMenu);
+		MyMainMenu = CreateWidget<UMainHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), wMainMenu);
 		if (MyMainMenu)
 		{
 			MyMainMenu->AddToViewport();

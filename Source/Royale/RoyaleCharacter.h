@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "UI/MainHUD.h"
 #include "RoyaleCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -32,7 +33,7 @@ public:
 		float BaseLookUpRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-		TSubclassOf<class UUserWidget> wMainMenu;
+		TSubclassOf<class UMainHUD> wMainMenu;
 
 protected:
 	void BeginPlay();
@@ -68,7 +69,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 
-	UUserWidget* MyMainMenu;
+	UMainHUD* MyMainMenu;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
