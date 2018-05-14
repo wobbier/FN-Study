@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "StatManager.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UStatManager::UStatManager()
@@ -24,20 +25,41 @@ void UStatManager::BeginPlay()
 void UStatManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (ObjectStats.Find(StatType::Health))
+	{
+		//ObjectStats[StatType::Health].Current = FMath::RoundToInt(100.f * (FMath::Sin(UGameplayStatics::GetRealTimeSeconds(GetWorld()) / 25.f)));
+	}
+	if (ObjectStats.Find(StatType::Shield))
+	{
+		//ObjectStats[StatType::Shield].Current = FMath::RoundToInt(100.f * (FMath::Sin(UGameplayStatics::GetRealTimeSeconds(GetWorld()) / 25.f)));
+	}
 }
 
 void UStatManager::SetStat(StatType type, int amount)
 {
-	m_stats[type].Current = amount;
+	if (ObjectStats.Find(type))
+	{
+		FStatValue& statValue = ObjectStats[type];
+		statValue.Current = FMath::Clamp(amount, statValue.Min, statValue.Max);
+	}
 }
 
 int UStatManager::GetStat(StatType type)
 {
-	return m_stats[type].Current;
+	if (ObjectStats.Find(type))
+	{
+		return ObjectStats[type].Current;
+	}
+	return 0;
 }
 
 void UStatManager::AddStat(StatType type, int amount)
 {
-	m_stats[type].Current += amount;
+	if (ObjectStats.Find(type))
+	{
+		FStatValue& statValue = ObjectStats[type];
+		statValue.Current = FMath::Clamp(statValue.Current + amount, statValue.Min, statValue.Max);
+	}
 }
 

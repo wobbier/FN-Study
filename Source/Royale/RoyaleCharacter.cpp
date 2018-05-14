@@ -11,6 +11,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/MainHUD.h"
+#include "Components/Core/StatManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ARoyaleCharacter
@@ -61,6 +62,8 @@ void ARoyaleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	PlayerInputComponent->BindAction("PrimaryFire", IE_Pressed, this, &ARoyaleCharacter::PrimaryFire);
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARoyaleCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ARoyaleCharacter::MoveRight);
 
@@ -87,7 +90,7 @@ void ARoyaleCharacter::BeginPlay()
 
 	if (wMainMenu)
 	{
-		MyMainMenu = CreateWidget<UMainHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), wMainMenu);
+		MyMainMenu = CreateWidget<UMainHUD>(static_cast<APlayerController*>(Controller), wMainMenu);
 		if (MyMainMenu)
 		{
 			MyMainMenu->AddToViewport();
@@ -100,14 +103,19 @@ void ARoyaleCharacter::OnResetVR()
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
+void ARoyaleCharacter::PrimaryFire()
+{
+	FindComponentByClass<UStatManager>()->AddStat(StatType::Shield, 10);
+}
+
 void ARoyaleCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		Jump();
+	Jump();
 }
 
 void ARoyaleCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		StopJumping();
+	StopJumping();
 }
 
 void ARoyaleCharacter::TurnAtRate(float Rate)
@@ -138,12 +146,12 @@ void ARoyaleCharacter::MoveForward(float Value)
 
 void ARoyaleCharacter::MoveRight(float Value)
 {
-	if ( (Controller != NULL) && (Value != 0.0f) )
+	if ((Controller != NULL) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction

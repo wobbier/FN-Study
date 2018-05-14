@@ -19,7 +19,11 @@ public:
 	void UpdateThing();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Variables Probably")
-		int GetNumber();
+		int GetNumber(StatType statType);
+
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Variables Probably")
+		int GetResourceAmount(ResourceType resourceType);
 
 	void Construct();
 };

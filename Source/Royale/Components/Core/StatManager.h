@@ -4,18 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include <map>
-
 #include "StatManager.generated.h"
 
-struct StatValue
+USTRUCT(BlueprintType)
+struct FStatValue
 {
+	GENERATED_USTRUCT_BODY()
+
+		UPROPERTY(EditAnywhere)
 	int Min = 0;
-	int Max = 100;
-	int Current = 0;
+	UPROPERTY(EditAnywhere)
+		int Max = 100;
+	UPROPERTY(EditAnywhere)
+		int Current = 0;
 };
 
-enum class StatType : int
+UENUM(BlueprintType)
+enum class StatType : uint8
 {
 	Null,
 	Health,
@@ -42,6 +47,7 @@ protected:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	std::map<StatType, StatValue> m_stats;
+	UPROPERTY(EditAnywhere)
+	TMap<StatType, FStatValue> ObjectStats;
 	
 };
